@@ -1,12 +1,12 @@
 # Implementation of Xifrat's scheme in GAP using Loops Package
-# Three mixing functions BLK, VEC, and DUP constitute Xifrat's algorithm
-# Functions: BlkIn,permutation, multiplication, Blk, Vec, Dup, VecIn, DupIn, prod, BitList, BitToBlk, Xtraction.
+# Three mixing functions: BLK, VEC, and DUP constitute Xifrat's algorithm
+# Functions: BlkIn, permutation, multiplication, Blk, Vec, Dup, VecIn, DupIn, prod, BitList, BitToBlk, Xtraction.
 # Objects: Q.
 
 LoadPackage("loop");
 
-# multiplicationtiplication table of the quasigroup utilized in Xifrat
-Q:= QuasigroupByCayleyTable([
+# multiplicationtiplication table of the quasigroup employed in Xifrat
+Q := QuasigroupByCayleyTable([
   [10,11,0,3,12,4,1,5,15,6,8,14,2,9,7,13],
   [15,8,9,7,2,13,5,1,10,14,11,6,12,0,3,4],
   [2,3,6,11,15,5,13,4,12,0,7,9,10,14,8,1],
@@ -25,15 +25,15 @@ Q:= QuasigroupByCayleyTable([
   [3,2,4,10,8,0,14,6,7,5,12,1,11,13,15,9]
   ]);
 
-elements:=Elements(Q);
+elements := Elements(Q);
 
 #returns a random vector in Q^(16) with entries in the quasigroup
 BlkIn := function() 
-  return List([1..16],x->Random(elements));
+  return List([1..16], x->Random(elements));
 end;
 
 # returns a cyclic permutation of a list <A> by <x>-1 positions to the right
-# inputs: BlkIn() and permutation shift
+# inputs: A := BlkIn() and x := permutation shift
 permutation := function(A,x) 
   local list, i;
   list := [];
@@ -45,11 +45,11 @@ end;
 
 # implementation of BLK function as presented in the scheme
 # inputs: two BlkIn() vectors
-BlkOld:=function(A,B) 
+BlkOld := function(A,B) 
   local i, C;
   C := [];
   for i in [1..16] do
-    C[i]:=(Product(permutation(A,i)))*(Product(permutation(B,i)))*(Product(permutation(A,i)))*(Product(permutation(B,i)));
+    C[i] := (Product(permutation(A,i)))*(Product(permutation(B,i)))*(Product(permutation(A,i)))*(Product(permutation(B,i)));
   od;
   return C;
 end;
@@ -57,53 +57,55 @@ end;
 # implementation of BLK function exploiting the generalized restricted-commutativity
 # inputs: two BlkIn() vectors
 BLK := function(A,B) 
-    local x;
-    x:=List([1..16],i->a[i]*b[i]*a[i]*b[i]);
-    return List([1..16],i->Product(permutation(x,i)));
+    local X;
+    X := List([1..16],i->A[i]*B[i]*A[i]*B[i]);
+    return List([1..16],i->Product(permutation(X,i)));
 end;
 
-# returns a random set of 6 random BlkIns, the exact inputs of VEC function
-VecIn:=function()  
-	return List([1..6],x->BlkIn());
+# returns a random set of 6 random BlkIn() vectors, the exact inputs of VEC function
+VecIn := function()  
+	return List([1..6], x->BlkIn());
 end;
 
 # runs BLK function on the inputs of VEC
 # input: VecIn()
 multiplication := function(A) 
   local a,i;
-  a:=A[1];
+  a := A[1];
   for i in [2..Length(A)] do
-    a := Blk(a,A[i]);
+    a := BLK(a,A[i]);
   od;
   return a;
 end;
 
-# inputs: A:=VecIn() and B:=VecIn()
-VecOld:= function(A,B) 
+# implementation of VEC function as presented in the scheme
+# inputs: two VecIn() vectors
+VecOld := function(A,B) 
   local i,j,C,X,M,V; 
   C := [];
   X := [];
   for i in [1..Length(A)] do
-    M:=multiplication(permutation(A,i));
-    V:=multiplication(permutation(B,i));
-    X[i]:= [M,V,M,V];
-    C[i]:= (multiplication(X[i]));
+    M := multiplication(permutation(A,i));
+    V := multiplication(permutation(B,i));
+    X[i] := [M,V,M,V];
+    C[i] := (multiplication(X[i]));
   od;
   return C;
 end;
 
-# inputs: A:=VecIn() and B:=VecIn()
-VEC := function(a,b) 
-    local x;
-    x:=List([1..6],i->multiplication([a[i],b[i],a[i],b[i]]));
-    return List([1..6],i->multiplication(permutation(x,i)));
+# implementation of VEC function exploiting the generalized restricted-commutativity
+# inputs: two VecIn() vectors
+VEC := function(A,B) 
+    local X;
+    X := List([1..6], i->multiplication([A[i],B[i],A[i],B[i]]));
+    return List([1..6], i->multiplication(permutation(X,i)));
 end;
 
-#runs VEC function on the inputs of DUP
-# input: A=:DupIn() 
+# runs VEC function on the inputs of DUP function, DupIn()
+# input: DupIn() vector
 prod := function(A) 
   local a, i;
-  a:=A[1];
+  a := A[1];
   if Length(A) < 2 then
     return a;
   else
@@ -114,43 +116,48 @@ prod := function(A)
   fi;
 end;
 
-# runs Vec function yielding the exact inputs needed for DUP function, C=(A0,A1)
-DupIn:=function()  
-    return List([1..2],x->VecIn());
+# runs VEC function yielding the exact inputs needed for DUP function
+DupIn := function()  
+    return List([1..2], x->VecIn());
 end;
 
+# implementation of DUP function as presented in the scheme
 # inputs: A:=DupIn() and B:=DupIn()
-DupOld:=function(A,B) 
+DupOld := function(A,B) 
   local i,X,C,M,V;
-  X:=[];
-  C:=[];
+  X := [];
+  C := [];
   for i in [1..Length(A)] do
-    M:=prod(permutation(A,i));
-    V:=prod(permutation(B,i));
-    X[i]:= [M,V,M,V];
-    C[i]:= prod(X[i]);  
+    M := prod(permutation(A,i));
+    V := prod(permutation(B,i));
+    X[i] := [M,V,M,V];
+    C[i] := prod(X[i]);  
   od;
   return C;
 end;
 
-DUP := function(a,b) #A:=DupIn() and B:=DupIn() as inputs
-    local x;
-    x:=List([1..2],i->prod([a[i],b[i],a[i],b[i]]));
-    return List([1..2],i->prod(permutation(x,i)));
+# implementation of DUP function exploiting the generalized restricted-commutativity
+# inputs: two DupIn() vectors
+DUP := function(A,B) 
+    local X;
+    X := List([1..2], i->prod([A[i],B[i],A[i],B[i]]));
+    return List([1..2],i ->prod(permutation(X,i)));
 end;
 
-sigma:=function(x)
+# function exploiting generalized restricted-commutativity to simplify BLK, VEC, and DUP functions
+# input: either a BlkIn(), VecIn(), or a DupIn() vector
+sigma := function(X)
   local list,i,j;
-  list:=[];
-  for i in [1..Length(x)]do
-    if not IsList(x[i]) then
-      list[i]:=Product(permutation(x,i));
+  list : =[];
+  for i in [1..Length(X)]do
+    if not IsList(X[i]) then
+      list[i] := Product(permutation(X,i));
     else
-      for j in [1..Length(x[i])] do
-        if not IsList(x[i][j]) then
-          list[i]:=multiplication(permutation(x,i));
+      for j in [1..Length(X[i])] do
+        if not IsList(X[i][j]) then
+          list[i] := multiplication(permutation(X,i));
         else
-          list[i]:=prod(permutation(x,i));
+          list[i] := prod(permutation(X,i));
         fi;
       od;
     fi;
@@ -158,43 +165,44 @@ sigma:=function(x)
   return list;
 end;
 
-#a,b from Blk, Vec, or Dup
-Xtraction:=function(A,B) 
-  local i,c,x;
-  if Length(A)=16 then
-    C:= BLK(A,B);
-    x:=sigma(C);
+#
+# inputs: either BlkIn(), VecIn(), or DupIn() vectors
+Xtraction := function(A,B) 
+  local i,C,X;
+  if Length(A) = 16 then
+    C := BLK(A,B);
+    X := sigma(C);
     for i in [1..14] do # at 15, the cycle reinitializes
-      x:=sigma(x);
+      X := sigma(X);
     od;
   fi;
 
-  if Length(A)=6 then
-    C:=VEC(A,B);
-    x:=sigma(C);
+  if Length(A) = 6 then
+    C := VEC(A,B);
+    X := sigma(C);
     for i in [1..238] do # at 238, the cycle reinitializes
-      x:=sigma(x);
+      X := sigma(X);
     od;
   fi;
 
-  if Length(A)=2 then
-    C:=DUP(a,b);
-    x:=sigma(C);
+  if Length(A) = 2 then
+    C := DUP(A,B);
+    X := sigma(C);
     for i in [1..238] do # at 238, the cycle reinitializes
-      x:=sigma(x);
+      X := sigma(X);
     od;
   fi;
-  #Verification
-
+# Verification
 #  if c=C(x) then
 #    Print(true);
 #  else
 #    Print(false);
 #  fi;
-  return x;
+  return X;
 end;
 
-# function returns unknown k from c and p1. p1=Dup(c,k)
+# function returns unknown k from c and p1. p1=DUP(c,k)
+# run "time;" afterward to get the duration in milliseconds to recover the key 
 FindKey :=function(p1,c)
     local i,k;
     k:=p1;
