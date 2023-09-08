@@ -1,7 +1,7 @@
 # Implementation of Xifrat's scheme in GAP using Loops Package
 # Three mixing functions: BLK, VEC, and DUP constitute Xifrat's algorithm
-# Functions: BlkIn, permutation, multiplication, Blk, Vec, Dup, VecIn, DupIn, prod, BitList, BitToBlk, Xtraction.
-# Objects: Q.
+# Functions: BlkIn, VecIn, DupIn, permutation, multiplication, prod, BlkOld, VecOld, DupOld, BLK, VEC, DUP, sigma, Xtraction, FindKey.
+# Objects: Q, elements.
 
 LoadPackage("loop");
 
@@ -70,7 +70,7 @@ end;
 # runs BLK function on the inputs of VEC
 # input: VecIn()
 multiplication := function(A) 
-  local a,i;
+  local a, i;
   a := A[1];
   for i in [2..Length(A)] do
     a := BLK(a,A[i]);
@@ -81,7 +81,7 @@ end;
 # implementation of VEC function as presented in the scheme
 # inputs: two VecIn() vectors
 VecOld := function(A,B) 
-  local i,j,C,X,M,V; 
+  local i, j, C, X, M, V; 
   C := [];
   X := [];
   for i in [1..Length(A)] do
@@ -124,7 +124,7 @@ end;
 # implementation of DUP function as presented in the scheme
 # inputs: A:=DupIn() and B:=DupIn()
 DupOld := function(A,B) 
-  local i,X,C,M,V;
+  local i, X, C, M, V;
   X := [];
   C := [];
   for i in [1..Length(A)] do
@@ -147,8 +147,8 @@ end;
 # function exploiting generalized restricted-commutativity to simplify BLK, VEC, and DUP functions
 # input: either a BlkIn(), VecIn(), or a DupIn() vector
 sigma := function(X)
-  local list,i,j;
-  list : =[];
+  local list, i, j;
+  list := [];
   for i in [1..Length(X)]do
     if not IsList(X[i]) then
       list[i] := Product(permutation(X,i));
@@ -168,7 +168,7 @@ end;
 #
 # inputs: either BlkIn(), VecIn(), or DupIn() vectors
 Xtraction := function(A,B) 
-  local i,C,X;
+  local i, C, X;
   if Length(A) = 16 then
     C := BLK(A,B);
     X := sigma(C);
@@ -193,7 +193,7 @@ Xtraction := function(A,B)
     od;
   fi;
 # Verification
-#  if c=C(x) then
+#  if c = C(x) then
 #    Print(true);
 #  else
 #    Print(false);
@@ -202,12 +202,12 @@ Xtraction := function(A,B)
 end;
 
 # function returns unknown k from c and p1. p1=DUP(c,k)
-# run "time;" afterward to get the duration in milliseconds to recover the key 
-FindKey :=function(p1,c)
-    local i,k;
-    k:=p1;
+# run "time;" afterwards to get the duration in milliseconds for the key recovery
+FindKey := function(p1,c)
+    local i, k;
+    k := p1;
     for i in [1..479] do 
-            k:=DUP(c,k);
+            k := DUP(c,k);
         od;
     return k; 
 end;
