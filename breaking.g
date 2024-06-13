@@ -180,7 +180,7 @@ Xtraction := function(A,B)
   if Length(A) = 6 then
     C := VEC(A,B);
     X := sigma(C);
-    for i in [1..238] do # at 238, the cycle reinitializes
+    for i in [1..238] do # at 239, the cycle reinitializes
       X := sigma(X);
     od;
   fi;
@@ -188,7 +188,7 @@ Xtraction := function(A,B)
   if Length(A) = 2 then
     C := DUP(A,B);
     X := sigma(C);
-    for i in [1..238] do # at 238, the cycle reinitializes
+    for i in [1..238] do # at 239, the cycle reinitializes
       X := sigma(X);
     od;
   fi;
