@@ -5,15 +5,15 @@ avalanche:=function(x,runs) #variability of the output as the ith bit changes
     
     if x=64 then
         k:=vector();
-        filepath1:=Concatenation("avalanche_blk_count","_",String(runs),".g");
-        filepath2:=Concatenation("avalanche_blk_change","_",String(runs),".g");
-        filepath3:=Concatenation("avalanche_blk_res","_",String(runs),".g");
+        filepath1:=Concatenation("file_path".g");
+        filepath2:=Concatenation("file_path".g");
+        filepath3:=Concatenation("file_path".g");
 
     else
         k:=f2();
-        filepath1:=Concatenation("avalanche_dup_count","_",String(runs),".g");
-        filepath2:=Concatenation("avalanche_dup_change","_",String(runs),".g");
-        filepath3:=Concatenation("avalanche_dup_res","_",String(runs),".g");
+        filepath1:=Concatenation("file_path".g");
+        filepath2:=Concatenation("file_path".g");
+        filepath3:=Concatenation("file_path".g");
     fi;
 
 
@@ -104,11 +104,11 @@ RES:=function(filein,fileout,x) #takes in change file
     AppendTo(fileout,list);
 end;
 
-duptest:=function(trials,date,pc)
+duptest:=function(trials)
     local i,cc,c,k,kk,result,file_in,file_out,trial,n,letter;
   
-    file_in:=Concatenation("input_dup","_",String(trials),"_",String(date),"_",String(pc),".g");
-    file_out:=Concatenation("output_dup","_",String(trials),"_",String(date),"_",String(pc),".g");
+    file_in:=Concatenation("path".g");
+    file_out:=Concatenation("path".g");
 
     PrintTo(file_in,"");
     PrintTo(file_out,"");
@@ -142,14 +142,14 @@ duptest:=function(trials,date,pc)
     Print("Total time: ", StringTime(time),"\n");
 end;
 
-blktest:=function(trials,date,pc)
+blktest:=function(trials)
     local result,resultaat,resultado,trailk,kk,i,v,vv,file_in,file_out,trial,n,k,letter;
 
     k:=vector();
     kk:=Flat(ToBit(k));
     
-    file_in:=Concatenation("/Users/kikasss/Desktop/REU/xifrat_simulations/blk/in_blk","_",String(trials),"_",String(date),"_",String(pc),".g");
-    file_out:=Concatenation("/Users/kikasss/Desktop/REU/xifrat_simulations/blk/out_blk","_",String(trials),"_",String(date),"_",String(pc),".g");
+    file_in:=Concatenation("file_path".g");
+    file_out:=Concatenation("file_path".g");
 
     PrintTo(file_in,"");
     PrintTo(file_out,"");
@@ -181,7 +181,7 @@ end;
 
 rand_sqn:=function(run)
     local file_in, i_rand,o,i_rando,list;
-    file_in:=Concatenation("/Users/kikasss/Desktop/REU/xifrat_simulations/dup/rand_sqn_100K",".g");
+    file_in:=Concatenation("path",".g");
     PrintTo(file_in,"");
 
     for i_rand in [1..run] do
