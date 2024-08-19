@@ -1,4 +1,4 @@
-duptest:=function(trials, date) #generates dup testing block ciphers for NIST randomness and collision tests
+duptest:=function(trials, date) #generates dup test vectors for NIST randomness and collision tests
     local i,cc,c,k,kk,result,file_in,file_out,trial,n,letter;
   
     file_in:=Concatenation("input_dup","_",String(trials),"_",String(date)".g");
@@ -36,7 +36,7 @@ duptest:=function(trials, date) #generates dup testing block ciphers for NIST ra
     Print("Total time: ", StringTime(time),"\n");
 end;
 
-blktest:=function(trials, date) #generates blk testing block ciphers for NIST randomness and collision tests
+blktest:=function(trials, date) #generates blk test vectors for NIST randomness and collision tests
     local result,resultaat,resultado,trailk,kk,i,v,vv,file_in,file_out,trial,n,k,letter;
 
     k:=vector();
@@ -73,7 +73,7 @@ blktest:=function(trials, date) #generates blk testing block ciphers for NIST ra
 end;
 
 
-rand_sqn:=function(trials) #generates random testing block ciphers for NIST randomness and and collision tests
+rand_sqn:=function(trials) #generates random test vectors for NIST randomness and and collision tests
     local file_in, i_rand,o,i_rando,list;
     file_in:=Concatenation("rand_sqn",".g");
     PrintTo(file_in,"");
