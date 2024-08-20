@@ -5,15 +5,15 @@ avalanche:=function(x,runs) #variability of the output as the ith bit changes
     
     if x=64 then
         k:=vector();
-        filepath1:=Concatenation("file_path".g");
-        filepath2:=Concatenation("file_path".g");
-        filepath3:=Concatenation("file_path".g");
+        filepath1:=Concatenation("avalblk_count",String(runs),".g");
+        filepath2:=Concatenation("avalblk_change",String(runs),".g");
+        filepath3:=Concatenation("avalblk_res",String(runs),".g");
 
     else
         k:=f2();
-        filepath1:=Concatenation("file_path".g");
-        filepath2:=Concatenation("file_path".g");
-        filepath3:=Concatenation("file_path".g");
+        filepath1:=Concatenation("avaldup_count",String(runs),".g");
+        filepath2:=Concatenation("avaldup_change",String(run)s,".g");
+        filepath3:=Concatenation("avaldup_res",String(runs),".g");
     fi;
 
 
@@ -83,32 +83,12 @@ avalanche:=function(x,runs) #variability of the output as the ith bit changes
     AppendTo(filepath3,list);
 end;
 
-RES:=function(filein,fileout,x) #takes in change file
-    local list,i,j,k,n,l;
-    Reread(filein);
-
-    if x=64 then
-        list:=List([1..64],x->List([1..64],x->0));
-    else
-    list:=List([1..768],x->List([1..768],x->0));
-    fi;
-
-    for i in [1..Length(l)] do
-        for j in [1..Length(l[i])] do
-            for k in [1..Length(l[i][j])] do
-                n:=l[i][j][k];
-                list[j][n]:=list[j][n]+1;
-            od;
-        od;
-    od;
-    AppendTo(fileout,list);
-end;
 
 duptest:=function(trials)
     local i,cc,c,k,kk,result,file_in,file_out,trial,n,letter;
   
-    file_in:=Concatenation("path".g");
-    file_out:=Concatenation("path".g");
+    file_in:=Concatenation("indup",String(trials),".g");
+    file_out:=Concatenation("outdup",String(trials),".g");
 
     PrintTo(file_in,"");
     PrintTo(file_out,"");
@@ -148,8 +128,8 @@ blktest:=function(trials)
     k:=vector();
     kk:=Flat(ToBit(k));
     
-    file_in:=Concatenation("file_path".g");
-    file_out:=Concatenation("file_path".g");
+    file_in:=Concatenation("inblk",String(trials),".g");
+    file_out:=Concatenation("outblk",String(trials),".g");
 
     PrintTo(file_in,"");
     PrintTo(file_out,"");
@@ -181,7 +161,7 @@ end;
 
 rand_sqn:=function(run)
     local file_in, i_rand,o,i_rando,list;
-    file_in:=Concatenation("path",".g");
+    file_in:=Concatenation("rand",trials,".g");
     PrintTo(file_in,"");
 
     for i_rand in [1..run] do
